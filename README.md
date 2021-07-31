@@ -1,4 +1,5 @@
 # 8 Week SQl Challenges
 This is the repository for my 8 Week Sql Challenges from data with Danny. This case study intended to test out my sql skills from beginner to advanced level query.
+**Check out the branches for each week challenges!**
 
-check the challenges here: https://8weeksqlchallenge.com/
+Look for the full challenges here: https://8weeksqlchallenge.com/
