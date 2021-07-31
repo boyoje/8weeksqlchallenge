@@ -1,0 +1,44 @@
+--join all the data and make a new table consists of customer_id, order_date, product_name, price, and member Y/N
+
+--create new table called main_data that consists the columns above
+CREATE OR REPLACE TABLE
+  dannys_dinner.main_data AS (
+  --select all the required columns
+  SELECT
+    a.customer_id,
+    a.order_date,
+    a.product_name,
+    a.price,
+    --use case when, Y for order made after joining membership
+    CASE 
+      WHEN a.order_date >= b.join_date THEN "Y"
+    ELSE
+    "N"
+  END
+    AS member
+  FROM
+    `dannys_dinner.sales_points` AS a
+  LEFT JOIN
+    dannys_dinner.members AS b
+  ON
+    a.customer_id = b.customer_id)
+  
+  --Rank the main_data table based on the member purchase Y or N
+SELECT
+  *,
+  --use case to exclude the "N" member and assign them as Null
+  CASE
+    WHEN member = "N" THEN NULL
+  ELSE
+  /* 
+  while it seems we already exclude the "N" member they still counted in the rank, so we need to trick
+  them by making an order by statement to force them into the bottom of the rank
+  */
+  DENSE_RANK() OVER (PARTITION BY customer_id ORDER BY CASE WHEN member = "N" THEN 1 ELSE 0 END, order_date)
+END
+  AS ranked
+FROM
+  `dannys_dinner.main_data`
+ORDER BY
+  customer_id,
+  order_date
