@@ -16,7 +16,7 @@ ORDER BY
 LIMIT
   1
 
-#Qusetion 5
+--Qusetion 5
 WITH
   cte1 AS(
   SELECT
@@ -46,7 +46,7 @@ GROUP BY
   1,3
 ORDER BY customer_id
 
-#Question 6
+--Question 6
 WITH
   cte1 AS (
   SELECT
