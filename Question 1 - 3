@@ -1,0 +1,58 @@
+--Question 1
+WITH
+  cte1 AS(
+  SELECT
+    a.customer_id,
+    b.product_name,
+    a.price
+  FROM
+    dannys_dinner.sales AS a
+  LEFT JOIN
+    dannys_dinner.menu AS b
+  ON
+    sales.product_id = menu.product_id)
+SELECT
+  customer_id,
+  SUM(price) AS total_purchase
+FROM
+  cte1
+GROUP BY
+  customer_id
+  
+--Question 2
+SELECT
+  customer_id,
+  count (DISTINCT order_date) as total_visit
+FROM
+  dannys_dinner.sales
+GROUP BY
+  1
+
+--Question 3
+WITH
+  cte1 AS(
+  SELECT
+    customer_id,
+    order_date,
+    product_id,
+    DENSE_RANK() OVER(PARTITION BY customer_id ORDER BY order_date ASC) AS ranked
+  FROM
+    dannys_dinner.sales
+  ORDER BY
+    customer_id)
+SELECT
+  a.customer_id,
+  a.order_date,
+  STRING_AGG(b.product_name ORDER BY b.product_name) AS product_name,
+FROM
+  cte1 AS a
+LEFT JOIN
+  dannys_dinner.menu AS b
+ON
+  a.product_id = b.product_id
+WHERE
+  ranked = 1
+GROUP BY
+  1, 2
+ORDER BY
+  customer_id ASC
