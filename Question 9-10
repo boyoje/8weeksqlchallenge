@@ -1,0 +1,62 @@
+--Question 9
+WITH
+  cte1 AS(
+  SELECT
+    a.customer_id,
+    b.product_name,
+    b.price
+  FROM
+    dannys_dinner.sales AS a
+  LEFT JOIN
+    dannys_dinner.menu AS b
+  ON
+    sales.product_id = menu.product_id)
+SELECT
+  customer_id,
+  product_name,
+  price,
+  CASE
+    WHEN product_name = "sushi" THEN price*2
+  ELSE
+  price*1
+END
+  AS total_points
+FROM
+  cte1
+
+--Question 10
+SELECT
+  a.customer_id,
+  b.product_name,
+  b.price,
+  CASE
+    WHEN b.product_name = "sushi" THEN price*2
+    WHEN DATE_DIFF(a.order_date, c.join_date, week) = 1 THEN price*2
+  ELSE
+  price*1
+END
+  AS points,
+  a.order_date
+FROM
+  dannys_dinner.sales AS a
+LEFT JOIN
+  dannys_dinner.menu AS b
+ON
+  a.product_id = b.product_id
+LEFT JOIN
+  dannys_dinner.members AS c
+ON
+  a.customer_id = c.customer_id
+
+--query to return the sum of point of each customer
+SELECT
+  customer_id,
+  SUM(points) AS total_points
+FROM
+  `gharin-personal-project.dannys_dinner.sales_points`
+WHERE
+  EXTRACT(month
+  FROM
+    order_date) = 1
+GROUP BY
+  1
